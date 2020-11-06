@@ -1,0 +1,645 @@
+---
+title: "IPWK13-CORE - PART 1"
+author: "Elizabeth Josephine"
+date: "11/04/2020"
+output: github_document
+---
+
+# PROBLEM DEFINITION
+## **a) Specifying the Question**
+
+Determining which individuals are most likely to click on the ads of the Kenyan entrepreneur
+
+## **b) Defining the metrics for success**
+
+Bivariates and univariate Exploratory data analysis
+
+## **c) Understanding the context**
+
+Determination of the audience the entrepreneur can target
+
+## **d) Recording the Experimental Design**
+
+1.   Define the question, the metric for success, the context, experimental design taken.
+2. Read and explore the given dataset.
+3. Find and deal with outliers, anomalies, and missing data within the dataset.
+4. Perform  univariate and bivariate analysis.
+5. From your insights provide a conclusion and recommendation.
+ 
+## **e) Relevance of the data**
+
+The data used for this project is necessary for determining which audience should be targeted
+
+[http://bit.ly/IPAdvertisingData].
+
+# DATA ANALYSIS
+## DATA SOURCING
+```{R}
+# loading libraries
+library(relaimpo)
+library(data.table)
+library(ggplot2) # Data visualization
+library(ggthemes) # Plot themes
+library(plotly) # Interactive data visualizations
+library(dplyr) # Data manipulation
+library(psych) # Will be used for correlation visualization
+
+```
+
+```{R}
+# importing our data
+# reading our data
+df <- fread('http://bit.ly/IPAdvertisingData')
+df
+```
+
+## DATA CHECKING
+```{R}
+# previewing the dataset
+View(df)
+
+```
+
+```{R}
+# previewing the column names
+colnames(df)
+
+```
+
+```{R}
+# previewing the dataset
+class(df)
+
+```
+```{R}
+# previewing the datatypes of the dataset
+sapply(df, class)
+```
+
+```{R}
+# previewing the head of the dataset
+head(df, n = 5)
+
+```
+
+```{R}
+# previewing the tail of the dataset
+tail(df, n = 5)
+
+```
+
+```{R}
+# checking the structure of the data
+str(df)
+
+```
+
+```{R}
+# checking the dimension/shape of the data
+dim(df) # 1000 rows and 10 columns
+```
+
+```{r}
+# selecting needed columns
+df <- subset(df, select = c("Daily Time Spent on Site", "Age", "Daily Internet Usage", "Male", "Country", "Clicked on Ad" ))
+colnames(df)
+
+```
+
+## DATA CLEANING
+### Missing Values
+``` {r}
+# checking for missing values
+sum(is.na(df))# there are no missing values in the data
+```
+
+``` {r}
+# displaying all rows from the dataset which don't contain any missing values 
+na.omit(df)
+```
+
+### Duplicates
+
+``` {r}
+# checking for duplicates
+duplicated_rows <- df[duplicated(df),]
+duplicated_rows # there are no duplicates in the data
+```
+
+``` {r}
+# showing these unique items and assigning to a variable unique_items below
+unique_items <- df[!duplicated(df), ]
+unique_items
+```
+
+``` {r}
+# renaming columns for easy analysis
+df <- df %>% rename(Daily_Time_Spent_on_Site = "Daily Time Spent on Site")
+df <- df %>% rename(Daily_Internet_Usage = "Daily Internet Usage")
+df <- df %>% rename(Clicked_on_Ad = "Clicked on Ad")
+
+    
+df
+colnames(df)
+```
+
+### Checking for outliers
+
+``` {r}
+# visualizing any existing outliers using a boxplot
+#df1 <- subset(df, select = c("Daily Time Spent on Site", "Age", "Daily Internet Usage", "Male", "Clicked on Ad"))
+
+df1 <- df %>% select_if(is.numeric)
+# df1
+# %>%select(-c(Male, `Clicked on Ad`))
+
+boxplot(df1)# there are no outliers in the data
+```
+
+```{R}
+colnames(df)
+```
+# EXPLORATORY DATA ANALYSIS
+## Univariate Analysis
+### Measures of Central Tendency
+
+``` {r}
+# descriptive statistics
+# these summaries will provide us with the measures of central tendencies of the numerical columns
+describe(df1)
+```
+
+```{R}
+# Finding the mode of age
+getmode <- function(v) {
+   uniqv <- unique(v)
+   uniqv[which.max(tabulate(match(v, uniqv)))]
+}
+
+df.Age.mode <- getmode(df$Age)
+df.Age.mode
+```
+### Measures of Dispersion
+``` {R}
+# Since we cannot find the measures of dispersion for all the six
+# columns at a go, i will work with age and daily internet usage
+```
+
+```{R}
+# Finding the minimum code
+df.Daily_Internet_Usage.min <- min(df$Daily_Internet_Usage)
+df.Daily_Internet_Usage.min
+```
+
+```{R}
+# Finding the minimum code
+df.Age.min <- min(df$Age)
+df.Age.min
+```
+```{R}
+# Finding the maximum code
+df.Daily_Internet_Usage.max <- max(df$Daily_Internet_Usage)
+df.Daily_Internet_Usage.max
+```
+
+```{R}
+# Finding the maximum code
+df.Age.max <- max(df$Age)
+df.Age.max
+```
+
+```{R}
+# Finding the range code
+df.Daily_Internet_Usage.range <- range(df$Daily_Internet_Usage)
+df.Daily_Internet_Usage.range
+```
+
+```{R}
+# Finding the range code
+df.Age.range <- range(df$Age)
+df.Age.range
+```
+
+```{R}
+# Finding the quantile code
+df.Daily_Internet_Usage.quantile <- quantile(df$Daily_Internet_Usage)
+df.Daily_Internet_Usage.quantile
+```
+
+```{R}
+# Finding the quantile code
+df.Age.quantile <- quantile(df$Age)
+df.Age.quantile
+```
+
+```{R}
+# Finding the variance code
+df.Daily_Internet_Usage.variance <- var(df$Daily_Internet_Usage)
+df.Daily_Internet_Usage.variance
+```
+
+```{R}
+# Finding the variance code
+df.Age.variance <- var(df$Age)
+df.Age.variance
+```
+
+```{R}
+# Finding the standard deviation code
+df.Daily_Internet_Usage.sd <- sd(df$Daily_Internet_Usage)
+df.Daily_Internet_Usage.sd
+```
+
+```{R}
+# Finding the standard deviation code
+df.Age.sd <- sd(df$Age)
+df.Age.sd
+```
+
+### Univariate Graphical
+
+```{R}
+# creating a boxplot graph for the variable all the numerical variables
+boxplot(df1, ylab = 'frequency', main = 'boxplot for numerical variables')
+
+```
+
+```{R}
+# fetching the columns
+Clicked_on_Ad <- df1$Clicked_on_Ad
+
+# fetching the frequency distribution
+Clicked_on_Ad_frequency <- table(Clicked_on_Ad)
+
+# plotting the bargraph
+barplot(Clicked_on_Ad_frequency,  xlab = 'Clicked_on_Ad', ylab = 'frequency',  main = 'barplot on Clicked_on_Ad_frequency')
+```
+
+```{R}
+# fetching the columns
+Ages <- df1$Age
+
+# fetching the frequency distribution
+Age_frequency <- table(Ages)
+
+# plotting the bargraph
+barplot(Age_frequency, xlab = 'Age', ylab = 'frequency',  main = 'barplot on Age_frequency')
+# most of the visitors to the site were aged 31 years old and 37 years old
+```
+
+```{R}
+# fetching the columns
+hist(df1$Daily_Internet_Usage)
+```
+
+```{R}
+# fetching the columns
+hist(df1$Age)
+```
+
+## Bivariate analysis
+```{R}
+# colnames(df1)
+# assigning columns to variables
+# Age<- df1$Age
+
+# finding the covariance of the numerical variables in df1
+cov(df1)
+
+```
+
+```{R}
+# finding the correlation of numerical variables in df1
+cor(df1)
+```
+
+### Graphical Techniques
+```{R}
+# finding the correlation matrix
+library(corrplot)
+#rquery.cormat(df1, type="full")
+res <- cor(df1)
+round(res, 2)
+```
+
+```{R}
+# creating a scatterplot
+# plot(Age, Daily_Internet_Usage, xlab="Age", ylab="Daily_Time_Spent_on_Site")
+
+df$`Clicked_on_Ad` <- as.factor(df$`Clicked_on_Ad`)
+ggplot(df, aes(x=`Daily_Time_Spent_on_Site`,y=`Daily_Internet_Usage`, color= `Clicked_on_Ad`)) + geom_point()
+```
+
+# IMPLEMENTATION OF THE SOLUTION 
+## SUPERVISED LEARNING
+
+```{R}
+# REQUIREMENT:  create a supervised learning model to help identify which individuals are most likely to click on the ads in the blog.
+## Packages Needed
+
+library(tidyverse)
+library(stringr)
+library(tidytext)
+library(randomForest)
+library(rpart)
+library(rpart.plot)
+library(mice)
+```
+
+### SVM
+```{R}
+library(caret)
+```
+
+```{R}
+str(df1)
+```
+
+
+```{R}
+# training datasets
+intrain <- createDataPartition(y = df1$Age, p= 0.8, list = FALSE)
+training <- df1[intrain,]
+head(training)
+testing <- df1[-intrain,]
+head(testing)
+```
+
+```{R}
+# We check the dimensions of out training dataframe and testing dataframe
+dim(training); 
+dim(testing);
+```
+
+```{R}
+# We then clean the data using the anyNA() method that checks for any null values.
+anyNA(df1)
+```
+
+```{R}
+# Then check the summary of our data by using the summary() function
+summary(df1)
+
+```
+```{R}
+
+# For example, the V14 variables, which is our target variable, it holds only 2 values, either 0 or 1.
+# This should be a categorical variable. To convert these to categorical variables, we need to factorize them.
+# The following code will convert the training data frameâs âV14â column to a factor variable.
+
+training[["Age"]] = factor(training[["Age"]])
+
+# Before we train our model we will need to control all the computational overheads. 
+# We will implement this through the trainControl() method. 
+# We are using setting number =10 and repeats =3
+
+trctrl <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
+
+svm_Linear <- train(Age ~., data = training, method = "svmLinear",
+trControl=trctrl,
+preProcess = c("center", "scale"),
+tuneLength = 10)
+
+# We can then check the result of our train() model as shown below
+svm_Linear
+```
+
+
+```{R}
+# We can use the predict() method for predicting results as shown below.
+# We pass 2 arguements, our trained model and our testing data frame.
+test_pred <- predict(svm_Linear, newdata = testing)
+test_pred
+```
+
+```{R}
+# Now checking for our accuracy of our model by using a confusion matrix
+# confusionMatrix(table(test_pred, testing$Age))
+```
+
+
+
+### linear regression model
+```{R}
+# previewing the dataset
+head(df1)
+```
+``` {R}
+# predicting the daily time spent on the site by the users
+# Applying the lm() function.
+multiple_lm <- lm(Daily_Time_Spent_on_Site ~ ., df1)
+
+# Generating the anova table
+anova(multiple_lm)
+
+# Then performing our prediction 
+pred2 <- predict(multiple_lm, df1)
+
+# Printing out our result
+pred2
+```
+
+```{R}
+##predicting the age of the individuals who click on the site
+# Train the model using the training sets and check score
+linear <- lm(Age ~ ., data=df1)
+summary(linear)
+
+#Predict Output
+predicted = predict(linear, df1)
+predicted
+```
+
+### A Decision tree model 
+```{R}
+
+# Load the party package. It will automatically load other
+# dependent packages.
+library(party)
+
+# Print some records from data set df1.
+head(df1)
+```
+
+```{R}
+
+# Creating the input data frame.
+input.dat <- df1
+
+# Creating the tree.
+  output.tree <- ctree( Daily_Internet_Usage ~ Age + Clicked_on_Ad + 
+Daily_Time_Spent_on_Site, 
+  data = input.dat)
+
+# Plotting the tree.
+plot(output.tree)
+```
+
+
+### NAIVE BAYES
+
+```{R}
+
+library(tidyverse)
+library(ggplot2)
+library(caret)#confusionMatrix
+library(caretEnsemble)
+library(psych)
+library(Amelia)#missmap
+library(mice) #mice
+library(GGally) #ggpairs
+library(rpart)
+library(randomForest)
+library(tidyverse)
+```
+
+
+```{R}
+# describing the data
+describe(df1)
+head(df1)
+```
+
+```{R}
+# We convert the output variable into a categorical variable
+df1$Clicked_on_Ad <- factor(df1$Clicked_on_Ad)
+df1$Clicked_on_Ad
+```
+
+```{R}
+head(df1)
+```
+
+```{R}
+# We then clean our dataset by setting zero values to NA's
+# ---
+# 
+#df1[, 1:3][df[, 1:3] == 0] <- NA
+```
+
+```{R}
+# We visualize our dataset by checking how many missing values
+# ---
+# 
+missmap(df1)
+```
+
+```{R}
+# We use mice package to predict missing values
+#mice_mod <- mice(df1[, c("Daily_Time_Spent_on_Site", "Age", "Daily_Internet_Usage", "Male", "Clicked_on_Ad")], method='rf')
+#mice_complete <- complete(mice_mod)
+
+```
+
+```{R}
+# We transfer the predicted missing values into the main data set
+#df1$Daily_Time_Spent_on_Site <- mice_complete$Daily_Time_Spent_on_Site
+#df1$Age <- mice_complete$Age
+#df1$Daily_Internet_Usage <- mice_complete$Daily_Internet_Usage
+#df1$Male<- mice_complete$Male
+#df1$Clicked_on_Ad <- mice_complete$Clicked_on_Ad
+```
+
+```{R}
+# Now checking whether there are still many missing values
+missmap(df1)
+```
+
+```{R}
+colnames(df1)
+```
+
+```{R}
+# Creating some visualisations to take a look at each variable
+# ---
+# Visualisation 1
+# 
+ggplot(df1, aes(Age, colour = Clicked_on_Ad)) +
+geom_freqpoly(binwidth = 1) + labs(title="Age Distribution by time spent on site")
+```
+
+```{R}
+# Visualisation 2
+# ---
+# 
+c <- ggplot(df1, aes(x=Daily_Internet_Usage, fill=Clicked_on_Ad, color=Clicked_on_Ad)) +
+geom_histogram(binwidth = 1) + labs(title="Pregnancy Distribution by time spent on site")
+c + theme_bw()
+```
+
+```{R}
+# Visualisation 3
+ 
+P <- ggplot(df1, aes(x=Male, fill=Clicked_on_Ad, color=Clicked_on_Ad)) +
+geom_histogram(binwidth = 1) + labs(title="BMI Distribution by time spent on site")
+P + theme_bw()
+```
+
+
+```{R}
+# Splitting data into training and test data sets
+# ---
+# 
+indxTrain <- createDataPartition(y = df1$Clicked_on_Ad,p = 0.75,list = FALSE)
+training <- df1[indxTrain,]
+training
+testing <- df1[-indxTrain,]
+testing
+```
+
+```{R}
+# Checking dimensions of the split
+
+prop.table(table(df1$Clicked_on_Ad)) * 100
+prop.table(table(training$Clicked_on_Ad)) * 100
+prop.table(table(testing$Clicked_on_Ad)) * 100
+```
+
+```{R}
+# Comparing the outcome of the training and testing phase
+# ---
+# Creating objects x which holds the predictor variables and y which holds the response variables
+# ---
+#
+x = training[,-5]
+y = training$Clicked_on_Ad
+```
+
+```{R}
+
+# Loading our inbuilt e1071 package that holds the Naive Bayes function.
+# ---
+# 
+library(e1071)
+```
+
+```{R}
+# Now building our model 
+# ---
+# 
+model = train(x,y,'nb',trControl=trainControl(method='cv',number=10))
+```
+
+```{R}
+# Model Evalution
+# ---
+# Predicting our testing set
+# 
+Predict <- predict(model, newdata = testing)
+
+# Getting the confusion matrix to see accuracy value and other parameter values
+# ---
+# 
+confusionMatrix(Predict, testing$Clicked_on_Ad )
+```
+
+### KNN
+
+```{R}
+library(class) #knn
+```
+
+```{R}
+
+
+```
