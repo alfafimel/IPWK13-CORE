@@ -17,7 +17,9 @@ stating insights drawn from your analysis and visualizations. Upon
 implementation, provide comparisons between the approaches learned this
 week i.e. K-Means clustering vs Hierarchical clustering highlighting the
 strengths and limitations of each approach in the context of your
-analysis. \#\# **c) Understanding the context**
+analysis.  
+
+## **c) Understanding the context**
 
 Kira Plastinina is a Russian brand that is sold through a defunct chain
 of retail stores in Russia, Ukraine, Kazakhstan, Belarus, China,
@@ -350,16 +352,28 @@ dim(df2) # 12330 rows and 18 columns
     ## [1] 12330    18
 
 ``` r
+colnames(df2)
+```
+
+    ##  [1] "Administrative"          "Administrative_Duration"
+    ##  [3] "Informational"           "Informational_Duration" 
+    ##  [5] "ProductRelated"          "ProductRelated_Duration"
+    ##  [7] "BounceRates"             "ExitRates"              
+    ##  [9] "PageValues"              "SpecialDay"             
+    ## [11] "Month"                   "OperatingSystems"       
+    ## [13] "Browser"                 "Region"                 
+    ## [15] "TrafficType"             "VisitorType"            
+    ## [17] "Weekend"                 "Revenue"
+
+``` r
 # selecting needed columns
-df3 <- subset(df2, select = c("Informational_Duration", "ProductRelated_Duration", "PageValues", "SpecialDay",  "Month", "Region", "VisitorType", "Weekend", "Revenue"))
+df3 <- subset(df2, select = c("ProductRelated", "ProductRelated_Duration", "PageValues", "Month", "VisitorType", "Weekend"))
 colnames(df3)
 ```
 
-    ## [1] "Informational_Duration"  "ProductRelated_Duration"
-    ## [3] "PageValues"              "SpecialDay"             
-    ## [5] "Month"                   "Region"                 
-    ## [7] "VisitorType"             "Weekend"                
-    ## [9] "Revenue"
+    ## [1] "ProductRelated"          "ProductRelated_Duration"
+    ## [3] "PageValues"              "Month"                  
+    ## [5] "VisitorType"             "Weekend"
 
 ## DATA CLEANING
 
@@ -378,63 +392,63 @@ df4 <- na.omit(df3)
 df4
 ```
 
-    ##        Informational_Duration ProductRelated_Duration PageValues SpecialDay
-    ##     1:                      0                0.000000    0.00000          0
-    ##     2:                      0               64.000000    0.00000          0
-    ##     3:                     -1               -1.000000    0.00000          0
-    ##     4:                      0                2.666667    0.00000          0
-    ##     5:                      0              627.500000    0.00000          0
-    ##    ---                                                                     
-    ## 12312:                      0             1783.791667   12.24172          0
-    ## 12313:                      0              465.750000    0.00000          0
-    ## 12314:                      0              184.250000    0.00000          0
-    ## 12315:                      0              346.000000    0.00000          0
-    ## 12316:                      0               21.250000    0.00000          0
-    ##        Month Region       VisitorType Weekend Revenue
-    ##     1:   Feb      1 Returning_Visitor   FALSE   FALSE
-    ##     2:   Feb      1 Returning_Visitor   FALSE   FALSE
-    ##     3:   Feb      9 Returning_Visitor   FALSE   FALSE
-    ##     4:   Feb      2 Returning_Visitor   FALSE   FALSE
-    ##     5:   Feb      1 Returning_Visitor    TRUE   FALSE
-    ##    ---                                               
-    ## 12312:   Dec      1 Returning_Visitor    TRUE   FALSE
-    ## 12313:   Nov      1 Returning_Visitor    TRUE   FALSE
-    ## 12314:   Nov      1 Returning_Visitor    TRUE   FALSE
-    ## 12315:   Nov      3 Returning_Visitor   FALSE   FALSE
-    ## 12316:   Nov      1       New_Visitor    TRUE   FALSE
+    ##        ProductRelated ProductRelated_Duration PageValues Month
+    ##     1:              1                0.000000    0.00000   Feb
+    ##     2:              2               64.000000    0.00000   Feb
+    ##     3:              1               -1.000000    0.00000   Feb
+    ##     4:              2                2.666667    0.00000   Feb
+    ##     5:             10              627.500000    0.00000   Feb
+    ##    ---                                                        
+    ## 12312:             53             1783.791667   12.24172   Dec
+    ## 12313:              5              465.750000    0.00000   Nov
+    ## 12314:              6              184.250000    0.00000   Nov
+    ## 12315:             15              346.000000    0.00000   Nov
+    ## 12316:              3               21.250000    0.00000   Nov
+    ##              VisitorType Weekend
+    ##     1: Returning_Visitor   FALSE
+    ##     2: Returning_Visitor   FALSE
+    ##     3: Returning_Visitor   FALSE
+    ##     4: Returning_Visitor   FALSE
+    ##     5: Returning_Visitor    TRUE
+    ##    ---                          
+    ## 12312: Returning_Visitor    TRUE
+    ## 12313: Returning_Visitor    TRUE
+    ## 12314: Returning_Visitor    TRUE
+    ## 12315: Returning_Visitor   FALSE
+    ## 12316:       New_Visitor    TRUE
 
 ### Duplicates
 
 ``` r
 # checking for duplicates
 duplicated_rows <- df4[duplicated(df4),]
-duplicated_rows # there are 622 duplicates in the data
+duplicated_rows # there are 740 duplicates in the data
 ```
 
-    ##      Informational_Duration ProductRelated_Duration PageValues SpecialDay Month
-    ##   1:                     -1                    -1.0          0        0.0   Feb
-    ##   2:                      0                     0.0          0        0.0   Feb
-    ##   3:                      0                     0.0          0        0.0   Feb
-    ##   4:                      0                     0.0          0        0.4   Feb
-    ##   5:                      0                     0.0          0        0.0   Feb
-    ##  ---                                                                           
-    ## 618:                      0                     0.0          0        0.0   Dec
-    ## 619:                      0                     0.0          0        0.0   Nov
-    ## 620:                      0                   284.5          0        0.0   Dec
-    ## 621:                      0                     0.0          0        0.0   Nov
-    ## 622:                      0                     0.0          0        0.0   Nov
-    ##      Region       VisitorType Weekend Revenue
-    ##   1:      4 Returning_Visitor   FALSE   FALSE
-    ##   2:      1 Returning_Visitor   FALSE   FALSE
-    ##   3:      1 Returning_Visitor   FALSE   FALSE
-    ##   4:      1 Returning_Visitor   FALSE   FALSE
-    ##   5:      1 Returning_Visitor   FALSE   FALSE
-    ##  ---                                         
-    ## 618:      6 Returning_Visitor    TRUE   FALSE
-    ## 619:      1 Returning_Visitor   FALSE   FALSE
-    ## 620:      3 Returning_Visitor   FALSE   FALSE
-    ## 621:      4 Returning_Visitor   FALSE   FALSE
-    ## 622:      4 Returning_Visitor   FALSE   FALSE
+    ##      ProductRelated ProductRelated_Duration PageValues Month       VisitorType
+    ##   1:              1                   -1.00          0   Feb Returning_Visitor
+    ##   2:              1                   -1.00          0   Feb Returning_Visitor
+    ##   3:              1                   -1.00          0   Feb Returning_Visitor
+    ##   4:              1                   -1.00          0   Feb Returning_Visitor
+    ##   5:              1                   -1.00          0   Feb Returning_Visitor
+    ##  ---                                                                          
+    ## 736:              3                    0.00          0   Nov Returning_Visitor
+    ## 737:              1                    0.00          0   Dec Returning_Visitor
+    ## 738:              2                    0.00          0   Nov Returning_Visitor
+    ## 739:              2                    0.00          0   Nov Returning_Visitor
+    ## 740:              3                   21.25          0   Nov       New_Visitor
+    ##      Weekend
+    ##   1:   FALSE
+    ##   2:   FALSE
+    ##   3:   FALSE
+    ##   4:    TRUE
+    ##   5:   FALSE
+    ##  ---        
+    ## 736:   FALSE
+    ## 737:    TRUE
+    ## 738:   FALSE
+    ## 739:   FALSE
+    ## 740:    TRUE
 
 ``` r
 # showing these unique items and assigning to a variable unique_items below
@@ -443,30 +457,30 @@ df5 <- unique(df4)
 df5
 ```
 
-    ##        Informational_Duration ProductRelated_Duration PageValues SpecialDay
-    ##     1:                      0                0.000000    0.00000          0
-    ##     2:                      0               64.000000    0.00000          0
-    ##     3:                     -1               -1.000000    0.00000          0
-    ##     4:                      0                2.666667    0.00000          0
-    ##     5:                      0              627.500000    0.00000          0
-    ##    ---                                                                     
-    ## 11690:                      0             1783.791667   12.24172          0
-    ## 11691:                      0              465.750000    0.00000          0
-    ## 11692:                      0              184.250000    0.00000          0
-    ## 11693:                      0              346.000000    0.00000          0
-    ## 11694:                      0               21.250000    0.00000          0
-    ##        Month Region       VisitorType Weekend Revenue
-    ##     1:   Feb      1 Returning_Visitor   FALSE   FALSE
-    ##     2:   Feb      1 Returning_Visitor   FALSE   FALSE
-    ##     3:   Feb      9 Returning_Visitor   FALSE   FALSE
-    ##     4:   Feb      2 Returning_Visitor   FALSE   FALSE
-    ##     5:   Feb      1 Returning_Visitor    TRUE   FALSE
-    ##    ---                                               
-    ## 11690:   Dec      1 Returning_Visitor    TRUE   FALSE
-    ## 11691:   Nov      1 Returning_Visitor    TRUE   FALSE
-    ## 11692:   Nov      1 Returning_Visitor    TRUE   FALSE
-    ## 11693:   Nov      3 Returning_Visitor   FALSE   FALSE
-    ## 11694:   Nov      1       New_Visitor    TRUE   FALSE
+    ##        ProductRelated ProductRelated_Duration PageValues Month
+    ##     1:              1                0.000000    0.00000   Feb
+    ##     2:              2               64.000000    0.00000   Feb
+    ##     3:              1               -1.000000    0.00000   Feb
+    ##     4:              2                2.666667    0.00000   Feb
+    ##     5:             10              627.500000    0.00000   Feb
+    ##    ---                                                        
+    ## 11572:             16              503.000000    0.00000   Nov
+    ## 11573:             53             1783.791667   12.24172   Dec
+    ## 11574:              5              465.750000    0.00000   Nov
+    ## 11575:              6              184.250000    0.00000   Nov
+    ## 11576:             15              346.000000    0.00000   Nov
+    ##              VisitorType Weekend
+    ##     1: Returning_Visitor   FALSE
+    ##     2: Returning_Visitor   FALSE
+    ##     3: Returning_Visitor   FALSE
+    ##     4: Returning_Visitor   FALSE
+    ##     5: Returning_Visitor    TRUE
+    ##    ---                          
+    ## 11572: Returning_Visitor   FALSE
+    ## 11573: Returning_Visitor    TRUE
+    ## 11574: Returning_Visitor    TRUE
+    ## 11575: Returning_Visitor    TRUE
+    ## 11576: Returning_Visitor   FALSE
 
 ### Checking for outliers
 
@@ -474,117 +488,190 @@ df5
 # visualizing any existing outliers using a boxplot
 #df1 <- subset(df, select = c("Daily Time Spent on Site", "Age", "Daily Internet Usage", "Male", "Clicked on Ad"))
 df6 <- df5 %>% select_if(is.numeric)
-df6
+boxplot(df6)
 ```
 
-    ##        Informational_Duration ProductRelated_Duration PageValues SpecialDay
-    ##     1:                      0                0.000000    0.00000          0
-    ##     2:                      0               64.000000    0.00000          0
-    ##     3:                     -1               -1.000000    0.00000          0
-    ##     4:                      0                2.666667    0.00000          0
-    ##     5:                      0              627.500000    0.00000          0
-    ##    ---                                                                     
-    ## 11690:                      0             1783.791667   12.24172          0
-    ## 11691:                      0              465.750000    0.00000          0
-    ## 11692:                      0              184.250000    0.00000          0
-    ## 11693:                      0              346.000000    0.00000          0
-    ## 11694:                      0               21.250000    0.00000          0
-    ##        Region
-    ##     1:      1
-    ##     2:      1
-    ##     3:      9
-    ##     4:      2
-    ##     5:      1
-    ##    ---       
-    ## 11690:      1
-    ## 11691:      1
-    ## 11692:      1
-    ## 11693:      3
-    ## 11694:      1
+![](IPWK13_CORE_UNSUPERVISED_LEARNING_ELIZABETH_JOSEPHINE_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
 ``` r
-# Check for outliers
-#df5 <- df4 %>% select_if(is.numeric)%>%select(-c(Male, `Clicked on Ad`))
-#lapply(df5, function(x) boxplot.stats(x)$out)
-boxplot(df6)# there are outliers in the data
-```
-
-![](IPWK13_CORE_UNSUPERVISED_LEARNING_ELIZABETH_JOSEPHINE_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
-\#\#\# dealing with outliers
-
-``` r
-# Drop outliers in area income
-#boxplot.stats(df6)$out
-#df6 <- df6[-which(df6 %in% outliers),]
-#boxplot(df6)
+# there are several outliers in the data and removing them renders the data un-usable for analysis
+# i will be working with the data that has outliers
 ```
 
 # EXPLORATORY DATA ANALYSIS
 
 ## Univariate Analysis
 
-### Measures of Central Tendency
+### descriptive statistics
 
 ``` r
-colnames(df6)
+summary(df2)
 ```
 
-    ## [1] "Informational_Duration"  "ProductRelated_Duration"
-    ## [3] "PageValues"              "SpecialDay"             
-    ## [5] "Region"
+    ##  Administrative   Administrative_Duration Informational   
+    ##  Min.   : 0.000   Min.   :  -1.00         Min.   : 0.000  
+    ##  1st Qu.: 0.000   1st Qu.:   0.00         1st Qu.: 0.000  
+    ##  Median : 1.000   Median :   8.00         Median : 0.000  
+    ##  Mean   : 2.318   Mean   :  80.91         Mean   : 0.504  
+    ##  3rd Qu.: 4.000   3rd Qu.:  93.50         3rd Qu.: 0.000  
+    ##  Max.   :27.000   Max.   :3398.75         Max.   :24.000  
+    ##  NA's   :14       NA's   :14              NA's   :14      
+    ##  Informational_Duration ProductRelated   ProductRelated_Duration
+    ##  Min.   :  -1.00        Min.   :  0.00   Min.   :   -1.0        
+    ##  1st Qu.:   0.00        1st Qu.:  7.00   1st Qu.:  185.0        
+    ##  Median :   0.00        Median : 18.00   Median :  599.8        
+    ##  Mean   :  34.51        Mean   : 31.76   Mean   : 1196.0        
+    ##  3rd Qu.:   0.00        3rd Qu.: 38.00   3rd Qu.: 1466.5        
+    ##  Max.   :2549.38        Max.   :705.00   Max.   :63973.5        
+    ##  NA's   :14             NA's   :14       NA's   :14             
+    ##   BounceRates         ExitRates         PageValues        SpecialDay     
+    ##  Min.   :0.000000   Min.   :0.00000   Min.   :  0.000   Min.   :0.00000  
+    ##  1st Qu.:0.000000   1st Qu.:0.01429   1st Qu.:  0.000   1st Qu.:0.00000  
+    ##  Median :0.003119   Median :0.02512   Median :  0.000   Median :0.00000  
+    ##  Mean   :0.022152   Mean   :0.04300   Mean   :  5.889   Mean   :0.06143  
+    ##  3rd Qu.:0.016684   3rd Qu.:0.05000   3rd Qu.:  0.000   3rd Qu.:0.00000  
+    ##  Max.   :0.200000   Max.   :0.20000   Max.   :361.764   Max.   :1.00000  
+    ##  NA's   :14         NA's   :14                                           
+    ##     Month           OperatingSystems    Browser           Region     
+    ##  Length:12330       Min.   :1.000    Min.   : 1.000   Min.   :1.000  
+    ##  Class :character   1st Qu.:2.000    1st Qu.: 2.000   1st Qu.:1.000  
+    ##  Mode  :character   Median :2.000    Median : 2.000   Median :3.000  
+    ##                     Mean   :2.124    Mean   : 2.357   Mean   :3.147  
+    ##                     3rd Qu.:3.000    3rd Qu.: 2.000   3rd Qu.:4.000  
+    ##                     Max.   :8.000    Max.   :13.000   Max.   :9.000  
+    ##                                                                      
+    ##   TrafficType    VisitorType         Weekend         Revenue       
+    ##  Min.   : 1.00   Length:12330       Mode :logical   Mode :logical  
+    ##  1st Qu.: 2.00   Class :character   FALSE:9462      FALSE:10422    
+    ##  Median : 2.00   Mode  :character   TRUE :2868      TRUE :1908     
+    ##  Mean   : 4.07                                                     
+    ##  3rd Qu.: 4.00                                                     
+    ##  Max.   :20.00                                                     
+    ## 
+
+``` r
+# from these summaries, very few people visited the brand website during the weekends as compared to the weekdays.
+# the revenue collected from the brand website was little considering that, of the total count of rows and input, only 1908 rendered a 'TRUE' in the revenue section while more than 10,000 entries rendered no revenue. 
+```
 
 ``` r
 # descriptive statistics
-# these summaries will provide us with the measures of central tendencies of the numerical columns
-describe(df6)
+# these summaries will provide us with the measures of central tendencies and the measures of dispersion of the numerical columns
+describe(df5)
 ```
+
+    ## Warning in FUN(newX[, i], ...): no non-missing arguments to min; returning Inf
+
+    ## Warning in FUN(newX[, i], ...): no non-missing arguments to max; returning -Inf
 
     ##                         vars     n    mean      sd median trimmed    mad min
-    ## Informational_Duration     1 11694   36.34  144.29      0    4.30   0.00  -1
-    ## ProductRelated_Duration    2 11694 1258.85 1944.61    659  880.84 769.47  -1
-    ## PageValues                 3 11694    6.21   19.01      0    1.49   0.00   0
-    ## SpecialDay                 4 11694    0.06    0.20      0    0.00   0.00   0
-    ## Region                     5 11694    3.17    2.41      3    2.81   2.97   1
-    ##                              max    range skew kurtosis    se
-    ## Informational_Duration   2549.38  2550.38 7.38    72.29  1.33
-    ## ProductRelated_Duration 63973.52 63974.52 7.21   134.57 17.98
-    ## PageValues                361.76   361.76 6.22    62.36  0.18
-    ## SpecialDay                  1.00     1.00 3.27     9.69  0.00
-    ## Region                      9.00     8.00 0.97    -0.19  0.02
+    ## ProductRelated             1 11576   33.70   45.21  20.00   24.58  19.27   0
+    ## ProductRelated_Duration    2 11576 1272.01 1950.12 671.59  893.09 771.39  -1
+    ## PageValues                 3 11576    6.27   19.10   0.00    1.54   0.00   0
+    ## Month*                     4 11576    6.17    2.39   7.00    6.36   1.48   1
+    ## VisitorType*               5 11576    2.71    0.70   3.00    2.88   0.00   1
+    ## Weekend                    6 11576     NaN      NA     NA     NaN     NA Inf
+    ##                              max    range  skew kurtosis    se
+    ## ProductRelated            705.00   705.00  4.29    30.35  0.42
+    ## ProductRelated_Duration 63973.52 63974.52  7.20   134.21 18.13
+    ## PageValues                361.76   361.76  6.19    61.75  0.18
+    ## Month*                     10.00     9.00 -0.83    -0.39  0.02
+    ## VisitorType*                3.00     2.00 -1.99     1.98  0.01
+    ## Weekend                     -Inf     -Inf    NA       NA    NA
 
 ``` r
-summary(df6)
+# the columns returning null values are those with 'character' datatypes
 ```
-
-    ##  Informational_Duration ProductRelated_Duration   PageValues    
-    ##  Min.   :  -1.00        Min.   :   -1.0         Min.   :  0.00  
-    ##  1st Qu.:   0.00        1st Qu.:  230.2         1st Qu.:  0.00  
-    ##  Median :   0.00        Median :  659.0         Median :  0.00  
-    ##  Mean   :  36.34        Mean   : 1258.8         Mean   :  6.21  
-    ##  3rd Qu.:   0.00        3rd Qu.: 1544.6         3rd Qu.:  0.00  
-    ##  Max.   :2549.38        Max.   :63973.5         Max.   :361.76  
-    ##    SpecialDay          Region     
-    ##  Min.   :0.00000   Min.   :1.000  
-    ##  1st Qu.:0.00000   1st Qu.:1.000  
-    ##  Median :0.00000   Median :3.000  
-    ##  Mean   :0.06258   Mean   :3.168  
-    ##  3rd Qu.:0.00000   3rd Qu.:4.000  
-    ##  Max.   :1.00000   Max.   :9.000
 
 ### Univariate Graphical
 
 ``` r
 # creating a boxplot graph for the variable all the numerical variables
-boxplot(df6)
+boxplot(df6, ylab = 'frequency', main = 'boxplot for numerical variables')
+```
+
+![](IPWK13_CORE_UNSUPERVISED_LEARNING_ELIZABETH_JOSEPHINE_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+
+``` r
+# fetching the columns
+ProductRelated <- df6$ProductRelated
+
+# fetching the frequency distribution
+ProductRelated_frequency <- table(ProductRelated)
+
+# plotting the bargraph
+barplot(ProductRelated_frequency,  xlab = 'ProductRelated', ylab = 'frequency',  main = 'barplot on customer visits to the ProductRelated pages')
 ```
 
 ![](IPWK13_CORE_UNSUPERVISED_LEARNING_ELIZABETH_JOSEPHINE_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
+``` r
+# fetching the columns
+ProductRelated_Duration <- df6$ProductRelated_Duration
+
+# fetching the frequency distribution
+ProductRelated_Duration_frequency <- table(ProductRelated_Duration)
+
+# plotting the bargraph
+barplot(ProductRelated_Duration_frequency,  xlab = 'ProductRelated_Duration', ylab = 'frequency',  main = 'barplot on duration of customer visits to the ProductRelated pages')
+```
+
+![](IPWK13_CORE_UNSUPERVISED_LEARNING_ELIZABETH_JOSEPHINE_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+
+``` r
+# fetching the columns
+hist(df6$ProductRelated)
+```
+
+![](IPWK13_CORE_UNSUPERVISED_LEARNING_ELIZABETH_JOSEPHINE_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+
+``` r
+# fetching the columns
+hist(df6$ProductRelated_Duration)
+```
+
+![](IPWK13_CORE_UNSUPERVISED_LEARNING_ELIZABETH_JOSEPHINE_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+
+``` r
+# fetching the columns
+hist(df6$PageValues)
+```
+
+![](IPWK13_CORE_UNSUPERVISED_LEARNING_ELIZABETH_JOSEPHINE_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+
 ## Bivariate analysis
 
-### Graphical Techniques
+``` r
+# finding the covariance of the numerical variables in df2
+covariance <- df5 %>% select_if(is.numeric)
+cov(covariance)
+```
 
-## Multivariate analysis
+    ##                         ProductRelated ProductRelated_Duration PageValues
+    ## ProductRelated              2043.67420               75563.101   37.18262
+    ## ProductRelated_Duration    75563.10148             3802973.668 1514.59772
+    ## PageValues                    37.18262                1514.598  364.83994
+
+``` r
+# finding the correlation coefficients
+cor(covariance)
+```
+
+    ##                         ProductRelated ProductRelated_Duration PageValues
+    ## ProductRelated              1.00000000               0.8571213 0.04306088
+    ## ProductRelated_Duration     0.85712129               1.0000000 0.04066160
+    ## PageValues                  0.04306088               0.0406616 1.00000000
+
+``` r
+# creating a scatterplot
+df2$`Revenue` <- as.factor(df2$`Revenue`)
+ggplot(df2, aes(x=`ProductRelated`,y=`ProductRelated_Duration`, color= `Revenue`)) + geom_point()
+```
+
+    ## Warning: Removed 14 rows containing missing values (geom_point).
+
+![](IPWK13_CORE_UNSUPERVISED_LEARNING_ELIZABETH_JOSEPHINE_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
+
 
 # IMPLEMENTATION OF THE SOLUTION
 
@@ -592,10 +679,548 @@ boxplot(df6)
 
 ### K-MEANS CLUSTERING
 
+``` r
+# Normalizing the dataset so that no particular attribute 
+# has more impact on clustering algorithm than others.
+# ---
+# 
+normalize <- function(x){
+  return ((x-min(x)) / (max(x)-min(x)))
+}
+```
+
+``` r
+df6$ProductRelated<- normalize(df6$ProductRelated)
+df6$ProductRelated_Duration<- normalize(df6$ProductRelated_Duration)
+df6$PageValues<- normalize(df6$PageValues)
+head(df6)
+```
+
+    ##    ProductRelated ProductRelated_Duration PageValues
+    ## 1:    0.001418440            1.563122e-05          0
+    ## 2:    0.002836879            1.016029e-03          0
+    ## 3:    0.001418440            0.000000e+00          0
+    ## 4:    0.002836879            5.731448e-05          0
+    ## 5:    0.014184397            9.824223e-03          0
+    ## 6:    0.026950355            2.426226e-03          0
+
+``` r
+# Applying the K-means clustering algorithm with no. of centroids(k)=3
+result<- kmeans(df6,3) 
+# Previewing the no. of records in each cluster
+result$size 
+```
+
+    ## [1]   658 10032   886
+
+``` r
+# Getting the value of cluster center datapoint value(3 centers for k=3)
+# ---
+# 
+result$centers 
+```
+
+    ##   ProductRelated ProductRelated_Duration  PageValues
+    ## 1     0.04379055              0.01881582 0.187263442
+    ## 2     0.03311248              0.01379485 0.006538671
+    ## 3     0.21702768              0.08981467 0.013440616
+
+``` r
+# Getting the cluster vector that shows the cluster where each record falls
+result$cluster
+```
+
+    ##     [1] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2
+    ##    [37] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##    [73] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##   [109] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##   [145] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 1 2 2 2 2 2 3 2 2 1 1 1 2 2 2 2 2 2 2 2
+    ##   [181] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##   [217] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 1 2 2 2 2 1
+    ##   [253] 2 2 2 2 2 2 2 2 2 2 2 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##   [289] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##   [325] 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##   [361] 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2
+    ##   [397] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##   [433] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2
+    ##   [469] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##   [505] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##   [541] 2 2 2 2 2 1 2 2 2 2 2 1 2 3 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##   [577] 2 2 2 1 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##   [613] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 3 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##   [649] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##   [685] 2 2 1 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##   [721] 2 2 2 2 2 2 2 2 2 2 2 3 2 2 1 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##   [757] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1
+    ##   [793] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 1
+    ##   [829] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##   [865] 2 2 2 2 2 2 3 2 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2
+    ##   [901] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##   [937] 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 1 2 2 2 2 2 1 1 2 2 2 2 2 2 2 2 2 2 2
+    ##   [973] 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [1009] 2 3 2 2 1 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3
+    ##  [1045] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [1081] 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2
+    ##  [1117] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [1153] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2
+    ##  [1189] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [1225] 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1
+    ##  [1261] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2
+    ##  [1297] 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [1333] 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 1 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [1369] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [1405] 2 2 3 2 3 2 2 2 2 2 2 2 2 1 2 2 2 2 1 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2
+    ##  [1441] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [1477] 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [1513] 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2
+    ##  [1549] 2 2 1 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 3 2
+    ##  [1585] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [1621] 2 2 2 2 2 2 1 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2
+    ##  [1657] 2 2 3 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2
+    ##  [1693] 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [1729] 2 2 1 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [1765] 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [1801] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2
+    ##  [1837] 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2
+    ##  [1873] 2 2 2 2 2 1 2 1 2 2 3 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 3 2 2 3 2 2 2
+    ##  [1909] 2 2 2 3 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 3 2 2 2 2
+    ##  [1945] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [1981] 2 2 2 2 2 2 2 2 2 2 2 1 3 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2
+    ##  [2017] 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [2053] 3 2 3 2 2 1 2 2 3 2 2 2 2 2 2 2 2 2 1 2 2 2 1 2 2 2 2 2 2 2 2 2 3 2 2 2
+    ##  [2089] 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [2125] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [2161] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2
+    ##  [2197] 1 2 3 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [2233] 2 2 2 3 2 2 2 2 2 2 1 2 1 2 1 2 2 2 2 2 2 2 1 2 2 2 2 2 1 2 3 2 2 2 2 2
+    ##  [2269] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2
+    ##  [2305] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 3 2 2 2 3 2
+    ##  [2341] 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 3 2 2 2 2 2 2 2 1 3 2 2 1 2 1 2
+    ##  [2377] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2
+    ##  [2413] 3 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [2449] 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [2485] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2
+    ##  [2521] 2 2 2 2 2 2 2 2 3 2 2 1 2 2 2 2 2 2 2 2 1 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2
+    ##  [2557] 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 3 3 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [2593] 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 3 2 2 2 2 2
+    ##  [2629] 1 2 3 2 2 2 3 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2
+    ##  [2665] 2 2 2 1 2 1 2 2 2 2 2 2 2 2 2 2 3 2 3 1 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2
+    ##  [2701] 2 2 2 2 2 2 2 2 2 3 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 3 2
+    ##  [2737] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [2773] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [2809] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 3 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1
+    ##  [2845] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 1 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [2881] 2 2 2 1 2 2 3 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 1 3 2 2 2 1 2
+    ##  [2917] 2 2 1 2 2 2 2 2 1 2 3 2 2 2 2 1 2 2 2 2 2 2 2 3 2 2 2 2 1 2 2 2 2 2 2 2
+    ##  [2953] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 3 2 1 2
+    ##  [2989] 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 3
+    ##  [3025] 2 2 2 1 3 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 1 2 2 2 2 2 2
+    ##  [3061] 2 3 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 1 2 2 2 2
+    ##  [3097] 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 3 2 3 2 2 2 2 3 2 2 2 2 2 2 2 3 2 2 2
+    ##  [3133] 2 2 2 2 2 2 2 2 2 1 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2
+    ##  [3169] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [3205] 3 2 2 2 2 2 2 2 3 2 2 1 2 2 2 2 2 2 2 2 3 2 3 2 2 1 2 2 2 2 2 2 2 2 2 2
+    ##  [3241] 2 2 1 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [3277] 2 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2
+    ##  [3313] 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [3349] 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2
+    ##  [3385] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2
+    ##  [3421] 2 2 2 2 2 2 2 2 1 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 1 3 2 2 2 2 2
+    ##  [3457] 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 3 3
+    ##  [3493] 2 3 2 2 2 2 2 1 2 1 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [3529] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [3565] 2 2 2 2 2 2 2 2 2 1 2 3 2 1 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 3 2 2 1 2 2
+    ##  [3601] 2 2 2 2 2 2 2 2 2 2 2 3 2 3 2 2 2 2 1 2 2 1 2 2 1 2 2 1 2 2 2 2 3 2 2 2
+    ##  [3637] 2 2 2 2 1 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 1 2
+    ##  [3673] 1 1 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2
+    ##  [3709] 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 3 3 2 2 2 2 2 2 1 1 2 2 2 2 2 2 2 2 2 2
+    ##  [3745] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 1 2 3 3 2 2 2 2
+    ##  [3781] 2 1 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 3 2 2 2 2 2 3 2 2 1
+    ##  [3817] 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 1 1 2 2 2 2 2 2 3 1 2 2 2 2 2 2 2
+    ##  [3853] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [3889] 2 2 2 2 3 2 2 2 1 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [3925] 2 2 2 2 1 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 1 2 2 2 1 2 2 2 2 2 2 2 2
+    ##  [3961] 3 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [3997] 2 1 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2
+    ##  [4033] 2 3 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2
+    ##  [4069] 1 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 1 2 2 2 2 2 2 2 2 2
+    ##  [4105] 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 1 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [4141] 2 3 2 2 2 2 3 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 1 2 1 2 2 2 2 2
+    ##  [4177] 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [4213] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 3 2 2 2 2 1 2 1 2 2 2 2
+    ##  [4249] 2 3 2 2 2 2 2 2 2 2 2 2 1 1 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 3 2 2 2 2 2 3
+    ##  [4285] 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2
+    ##  [4321] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [4357] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [4393] 2 2 2 2 2 2 2 2 2 2 2 3 2 1 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [4429] 2 2 2 2 3 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [4465] 2 2 2 2 2 2 2 2 2 2 1 2 2 2 3 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [4501] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 3 2
+    ##  [4537] 2 2 3 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 3 3 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2
+    ##  [4573] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [4609] 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 3 2 1 2 2 2 1 2 2 2 2 2 2 2 2 3 2 2 2 2 2
+    ##  [4645] 2 2 2 2 2 2 3 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2
+    ##  [4681] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 1
+    ##  [4717] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 3 3 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2
+    ##  [4753] 2 2 2 3 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [4789] 3 2 2 2 2 2 2 2 2 1 2 2 2 2 1 2 2 2 2 3 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2
+    ##  [4825] 2 2 2 1 3 2 2 2 2 2 2 2 2 2 2 3 2 2 1 2 2 2 2 1 2 1 2 2 2 2 1 2 2 2 2 2
+    ##  [4861] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [4897] 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2
+    ##  [4933] 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 1 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2
+    ##  [4969] 3 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [5005] 1 2 2 2 2 2 2 1 2 2 2 3 2 2 2 2 3 1 2 2 2 2 1 1 2 2 2 2 2 2 2 2 2 2 1 2
+    ##  [5041] 2 1 2 1 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 1 2 2 3 2
+    ##  [5077] 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 3 1 2 2 2 2 2 2 2 2
+    ##  [5113] 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 3 2 3 2 2 2 2 2 2 2 2 2 2 3 3 2 2 3
+    ##  [5149] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2
+    ##  [5185] 3 3 3 2 2 2 2 1 2 2 2 2 2 2 1 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 3 2 2 2 2 2
+    ##  [5221] 2 3 2 2 2 2 3 2 2 2 2 2 2 2 2 3 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [5257] 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 3 3 2 2 2 2 2 1
+    ##  [5293] 2 2 2 2 2 2 3 2 2 2 3 2 2 2 2 1 1 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 3
+    ##  [5329] 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2
+    ##  [5365] 2 2 2 2 1 2 2 2 2 2 1 2 3 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 3 2 2 2 2 1 2 2
+    ##  [5401] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [5437] 2 3 2 3 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 3 3 2 2 2 2 2 2 2 2
+    ##  [5473] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2
+    ##  [5509] 2 2 2 2 1 2 2 2 2 3 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 3 2
+    ##  [5545] 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 3 2 2 2
+    ##  [5581] 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 3 2 2 3
+    ##  [5617] 2 2 3 1 2 2 1 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 3 2 2 2
+    ##  [5653] 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2
+    ##  [5689] 3 3 2 2 2 2 2 2 2 2 2 2 1 2 2 2 3 2 1 2 3 2 3 2 2 3 2 2 2 2 2 2 2 2 2 3
+    ##  [5725] 2 2 2 2 2 2 2 2 2 2 1 2 2 3 2 2 3 2 3 2 1 2 1 2 1 2 2 2 2 3 1 2 2 2 2 1
+    ##  [5761] 2 2 2 2 2 1 2 2 2 2 2 2 3 2 1 2 2 2 2 2 2 1 1 2 3 2 2 2 2 2 2 3 2 2 2 2
+    ##  [5797] 2 2 2 2 1 2 2 2 2 3 2 2 2 1 2 2 2 2 3 2 2 2 2 1 2 3 2 2 2 2 2 3 2 2 2 2
+    ##  [5833] 2 2 2 2 2 2 2 3 2 2 2 2 3 2 3 2 2 2 1 2 2 2 3 1 2 2 2 2 2 1 2 2 2 3 2 2
+    ##  [5869] 2 2 2 2 2 3 2 2 2 2 3 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1
+    ##  [5905] 2 3 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 3 2 2 2 2 2 2 2
+    ##  [5941] 2 1 2 2 2 2 3 2 2 1 2 2 2 2 2 2 2 2 2 1 2 1 2 2 3 3 2 2 2 2 2 2 1 2 1 2
+    ##  [5977] 2 2 2 2 2 2 2 2 1 2 3 3 2 2 2 2 1 2 2 3 2 3 2 2 2 2 2 2 3 2 2 2 3 2 2 2
+    ##  [6013] 2 2 3 3 2 2 1 2 2 2 2 2 2 2 2 2 2 3 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2
+    ##  [6049] 2 2 2 3 2 2 2 2 2 2 2 3 2 1 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 3
+    ##  [6085] 2 1 2 2 3 2 2 2 2 2 2 3 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2
+    ##  [6121] 1 2 3 2 2 2 2 2 2 3 2 2 2 3 2 2 2 2 3 2 3 2 2 2 3 2 2 2 2 2 1 1 1 3 1 2
+    ##  [6157] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 3
+    ##  [6193] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 3 2 2 2 2 1 2 2 2 2 3 1 2 1 2 3 2
+    ##  [6229] 2 2 1 2 2 2 2 1 2 2 2 2 2 3 2 1 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1
+    ##  [6265] 2 2 2 2 3 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 1 3 2 2 3 1 2 2 2 3 2 2 2 2 2
+    ##  [6301] 1 2 3 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 3 2 2 1 2 2 3 2 2 2 3 2 1 2 2 2 2
+    ##  [6337] 2 2 2 2 2 2 2 1 2 2 2 1 2 2 3 3 2 2 2 3 2 2 2 2 2 2 2 2 3 2 3 2 2 2 1 2
+    ##  [6373] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 3 2 2 2 2 2 3 2 2 2 2 2 2 2 2 1 2
+    ##  [6409] 2 2 2 2 2 2 3 2 2 2 2 2 2 1 2 2 1 2 2 2 1 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2
+    ##  [6445] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 3 3 2 2 2 1 3 2 2 2 1 2 2 2 1 2 2 2
+    ##  [6481] 2 2 1 3 2 2 3 2 3 2 2 2 2 2 2 1 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [6517] 2 2 2 3 2 2 2 3 3 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2
+    ##  [6553] 1 2 2 2 2 2 2 2 2 2 1 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2
+    ##  [6589] 2 3 3 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 1 2 1 2 2 1 2 2 2 3 2 2 2 2 3 2 2 1
+    ##  [6625] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 3 2 2 1 2 2
+    ##  [6661] 2 2 2 2 2 2 3 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 3 2 1 2 2 2 2 2 2
+    ##  [6697] 2 2 2 2 3 2 1 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 3 1 2 2 2 2 2 2 2 3 2 2
+    ##  [6733] 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 3 2
+    ##  [6769] 2 2 2 2 2 1 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 1
+    ##  [6805] 2 2 2 2 2 3 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 1 2 2 2 3 2 1 2 2 3 2
+    ##  [6841] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3
+    ##  [6877] 2 2 1 3 2 2 2 1 1 2 2 3 2 2 2 2 2 2 3 2 2 2 2 2 2 1 1 3 2 2 2 2 2 2 2 2
+    ##  [6913] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 3 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 3
+    ##  [6949] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 1 2
+    ##  [6985] 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [7021] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [7057] 2 2 2 2 2 2 2 2 2 2 2 1 2 2 1 1 2 2 2 1 2 2 2 2 2 2 2 2 3 1 2 3 1 1 2 2
+    ##  [7093] 2 1 2 2 2 2 2 3 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 3 2 2 1
+    ##  [7129] 3 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [7165] 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 3 1 2 2 2 2 2 2 2 2 1 2 2 2 2
+    ##  [7201] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 1 2 2 2 2 2 3 2 2 2 2 2 2 2 1 2 2 2 2
+    ##  [7237] 2 2 2 2 2 2 2 2 2 2 1 2 3 2 2 2 2 2 2 2 2 1 2 2 2 1 2 2 2 3 2 2 2 2 3 3
+    ##  [7273] 3 2 2 2 2 2 2 2 2 1 3 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 3 2 2 3 2 2 2 1
+    ##  [7309] 2 3 3 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 1 2 1 2 2 1 2 2 2
+    ##  [7345] 2 2 2 2 2 2 2 2 1 1 2 2 2 3 2 2 2 1 2 1 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2
+    ##  [7381] 2 2 2 2 2 2 2 2 2 3 3 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [7417] 2 2 2 2 2 3 2 2 2 3 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 1 2 2
+    ##  [7453] 2 2 2 2 1 2 1 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2
+    ##  [7489] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 1 2 2 2
+    ##  [7525] 2 2 2 2 2 2 2 2 1 2 2 2 2 2 1 2 2 2 2 2 3 2 2 1 2 2 2 2 2 2 2 2 2 2 2 3
+    ##  [7561] 2 2 2 3 2 2 2 2 3 2 1 2 3 2 2 1 2 2 2 2 2 2 2 1 3 3 2 1 2 2 2 2 2 2 2 2
+    ##  [7597] 2 2 2 2 2 2 2 2 2 2 2 3 3 1 3 2 2 1 2 2 3 2 2 2 1 2 3 2 2 2 2 2 3 3 2 2
+    ##  [7633] 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [7669] 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 3 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 1
+    ##  [7705] 2 2 2 2 2 2 2 2 2 2 2 3 2 3 2 2 2 2 2 2 2 3 2 2 2 1 2 1 2 3 2 2 1 2 2 2
+    ##  [7741] 2 2 2 2 2 3 2 2 1 2 2 2 2 3 3 2 2 2 3 2 2 3 3 3 2 3 2 2 3 2 2 2 2 1 2 2
+    ##  [7777] 2 1 2 2 2 2 2 1 2 2 2 3 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 3
+    ##  [7813] 2 3 1 2 2 2 3 2 2 1 2 2 2 2 1 2 2 3 3 2 2 1 2 2 3 2 2 2 2 2 2 2 2 2 2 2
+    ##  [7849] 2 2 2 3 2 2 3 2 1 3 2 1 2 2 2 1 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 1 2 2
+    ##  [7885] 2 2 3 2 2 2 2 3 2 2 3 1 2 2 2 2 2 2 3 3 2 2 2 2 2 2 2 2 2 3 1 2 3 2 2 2
+    ##  [7921] 2 2 2 3 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3
+    ##  [7957] 2 3 2 2 2 2 2 3 3 2 2 2 2 2 2 2 1 2 2 3 2 2 2 2 3 2 2 2 2 2 2 3 2 2 3 1
+    ##  [7993] 2 2 2 2 2 3 2 3 2 2 2 3 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2
+    ##  [8029] 3 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 1 3 2 2 2 1 2 2 2 2 2 2
+    ##  [8065] 2 2 2 2 2 2 2 3 2 3 2 2 2 2 2 3 2 2 2 3 2 2 2 1 2 3 1 2 2 2 2 2 2 2 1 2
+    ##  [8101] 3 3 2 3 2 2 1 2 2 2 2 2 2 2 1 2 2 1 2 2 2 2 3 2 2 2 1 2 2 2 2 2 2 2 1 2
+    ##  [8137] 1 3 2 1 2 3 2 2 2 3 3 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 3 2 3 2 1 2 2 2 2
+    ##  [8173] 2 2 2 2 2 2 2 2 2 3 2 2 2 3 2 3 3 2 2 2 2 2 1 2 2 1 3 2 2 2 2 2 2 2 2 2
+    ##  [8209] 2 2 2 2 2 2 2 2 3 2 2 2 2 1 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2
+    ##  [8245] 2 3 2 2 3 2 2 1 2 2 2 1 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 3 2 2 2 2 2
+    ##  [8281] 1 2 3 2 2 3 3 2 3 2 2 2 2 1 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 1 1
+    ##  [8317] 2 2 2 2 2 2 2 2 2 2 3 2 2 2 3 3 1 2 2 3 1 3 2 2 2 2 2 2 2 2 1 2 2 2 2 2
+    ##  [8353] 2 2 2 2 2 2 3 2 2 2 2 2 2 2 1 2 3 2 2 2 2 2 2 2 3 2 3 2 2 2 2 2 2 2 2 2
+    ##  [8389] 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 1 3 3 2 2 3 2 2 2 2 2
+    ##  [8425] 2 3 2 2 2 2 2 1 2 1 2 2 2 3 2 2 2 3 2 3 2 2 2 2 1 2 2 2 2 2 2 1 1 2 2 2
+    ##  [8461] 2 2 2 2 2 3 2 2 2 2 2 2 3 2 2 2 2 2 3 2 2 1 2 2 2 2 2 3 2 1 2 2 2 3 3 2
+    ##  [8497] 2 2 3 2 3 2 2 3 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3
+    ##  [8533] 2 2 1 1 2 2 2 2 3 2 2 2 2 2 2 2 1 1 2 2 2 2 2 2 3 2 2 2 2 2 3 2 1 2 2 2
+    ##  [8569] 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 1 2 2 2 2 2 2 3 2 2 2 3 2 2 2 3 2 2 3 2 2
+    ##  [8605] 2 2 2 2 2 2 2 2 3 1 3 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 1 2 2 2 2 2 3
+    ##  [8641] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 3 2 3 2 2 3 1 2 2 1 2 2
+    ##  [8677] 3 2 3 1 2 2 2 3 2 3 2 2 1 2 2 2 2 3 2 2 2 2 3 2 2 2 2 2 2 2 2 1 2 2 2 2
+    ##  [8713] 1 2 2 1 2 2 2 2 3 2 1 2 2 1 3 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 3 2 2 2
+    ##  [8749] 3 2 2 2 2 2 2 2 3 2 2 2 3 2 3 2 2 2 3 2 2 2 2 2 3 2 2 2 2 2 2 2 3 2 2 2
+    ##  [8785] 2 2 2 3 2 2 2 2 3 2 2 3 3 2 1 2 2 2 3 2 2 2 3 2 2 3 1 2 3 2 2 2 2 3 2 2
+    ##  [8821] 2 3 2 3 3 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2
+    ##  [8857] 2 2 2 3 1 2 2 2 2 2 2 2 2 2 2 2 2 2 3 1 2 2 2 2 2 1 2 2 2 2 2 2 2 2 3 3
+    ##  [8893] 2 2 2 2 2 2 3 3 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2
+    ##  [8929] 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 1 3 2 3 1 1 2 2 2 3 2 3 2 2 2 2
+    ##  [8965] 2 2 2 3 3 2 2 2 2 3 2 2 2 2 2 2 3 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3
+    ##  [9001] 3 3 2 2 3 2 2 2 3 3 2 2 3 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [9037] 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 3 2 2 1 2
+    ##  [9073] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 1 2 3 3 2 2 2 2 2 2 2 1 2 2 2 2 2 3 3 2
+    ##  [9109] 1 2 3 2 2 2 1 2 2 2 2 2 2 3 2 2 2 1 2 2 2 2 2 2 2 2 3 2 2 2 2 2 3 2 2 2
+    ##  [9145] 2 2 2 2 2 2 2 2 2 3 2 2 2 3 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2
+    ##  [9181] 2 2 2 2 2 2 2 1 1 2 2 2 2 2 2 2 2 2 3 2 2 3 3 2 2 2 2 2 2 2 2 1 2 2 2 2
+    ##  [9217] 2 2 2 2 2 2 2 2 3 2 3 2 2 3 2 2 2 2 2 2 2 3 2 2 2 2 2 1 2 2 2 3 2 2 2 3
+    ##  [9253] 3 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 3 3 2 1 2 2 2 2 2 2 3 2 2 2 3 2 2 2
+    ##  [9289] 2 2 3 1 2 3 2 2 1 2 2 2 2 3 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2
+    ##  [9325] 2 2 2 2 2 2 2 2 2 2 3 1 2 2 2 3 2 2 1 2 2 2 3 1 2 1 2 2 3 3 2 2 2 2 3 2
+    ##  [9361] 1 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [9397] 2 2 2 2 2 2 2 1 1 2 2 2 2 2 3 2 2 2 2 3 1 2 2 2 2 2 3 2 3 2 2 2 2 2 2 1
+    ##  [9433] 2 2 3 2 3 2 2 2 1 2 2 3 1 2 2 2 2 3 2 2 2 2 2 2 2 2 2 3 2 2 2 3 2 3 2 2
+    ##  [9469] 2 2 2 2 1 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [9505] 1 1 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 3 3 2 2 2 2 2 2 3
+    ##  [9541] 2 3 2 3 2 2 3 3 1 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 3 2 2 3 2 2 2 3 2 2
+    ##  [9577] 3 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 3 2 2 2 2 2 2 2 2 2 3 2 2 2
+    ##  [9613] 2 2 3 2 2 1 2 2 3 2 2 3 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3
+    ##  [9649] 2 2 3 1 2 2 1 2 2 2 2 2 3 2 3 3 1 2 2 3 3 2 3 2 2 2 2 2 2 2 2 3 2 2 2 2
+    ##  [9685] 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 3 2 2 2 2 2 2 2 2 2 3 1 2 2 2
+    ##  [9721] 2 2 2 2 2 2 2 3 3 2 2 2 3 2 2 2 2 3 2 2 2 2 2 2 2 2 3 2 3 2 1 2 1 2 2 2
+    ##  [9757] 2 2 2 2 2 2 2 2 1 2 3 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2
+    ##  [9793] 2 2 2 2 2 1 2 1 2 2 2 1 3 2 1 2 2 2 2 2 2 3 2 1 2 1 2 2 2 2 2 3 2 2 2 3
+    ##  [9829] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 3 1 2 2
+    ##  [9865] 2 2 2 1 2 2 2 2 1 1 2 2 2 1 2 2 2 2 2 2 2 2 2 2 1 2 2 1 2 2 2 2 2 2 3 2
+    ##  [9901] 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 3 2 2 2 3 2 2 2 2
+    ##  [9937] 2 2 2 2 3 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 3 2 2 2 2 3 2 2 2
+    ##  [9973] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 3 2 1 3 2 2 1 2 2 2 2 2 2 2 2 2 1 2 2
+    ## [10009] 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 3 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 3 2 2
+    ## [10045] 2 2 2 2 2 1 2 2 2 2 2 2 2 2 1 2 2 3 2 2 3 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2
+    ## [10081] 2 3 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2
+    ## [10117] 2 2 2 2 2 3 1 2 2 3 2 2 2 2 2 2 2 3 2 2 2 1 2 2 2 2 2 2 1 2 2 2 2 2 2 2
+    ## [10153] 2 2 1 2 2 3 3 2 2 3 2 2 2 3 3 2 2 1 2 2 2 2 3 1 3 2 3 2 2 2 2 2 2 2 2 2
+    ## [10189] 2 2 2 2 1 2 2 2 2 2 2 2 2 1 3 2 2 2 2 3 2 2 2 2 2 3 2 1 2 2 2 2 1 1 2 3
+    ## [10225] 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 1 2 3 2 2 2 3 2 3 2 2 2
+    ## [10261] 2 3 2 2 3 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 3 2 2 2 2 2 2
+    ## [10297] 2 2 2 2 2 2 2 2 3 3 2 2 2 2 2 2 1 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 3 2
+    ## [10333] 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 3 1 2 2 2 2 2 2 2 2 3 2 2 1
+    ## [10369] 1 2 2 2 2 2 2 2 2 2 2 2 2 2 3 3 2 3 2 2 2 2 2 3 2 2 2 2 2 3 2 2 2 2 2 2
+    ## [10405] 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 3 2 2 3 2 2 2 2 3 2 2 2 2 2 2 2 3 2 2 3 2
+    ## [10441] 2 2 2 1 2 3 2 2 2 2 2 3 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 1 2
+    ## [10477] 2 2 2 2 2 2 2 1 2 2 2 1 3 2 2 2 2 2 2 2 2 2 3 1 3 2 2 2 2 3 2 2 3 2 2 1
+    ## [10513] 2 2 1 3 3 3 2 1 2 3 2 2 2 2 2 2 2 3 3 2 2 2 3 2 2 2 2 2 2 3 2 2 2 3 2 2
+    ## [10549] 2 2 2 2 2 2 2 2 2 2 3 2 2 3 2 2 2 2 2 2 3 1 3 2 2 2 1 2 1 2 2 2 2 2 2 1
+    ## [10585] 2 2 1 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 3 2 2 2 2 2 2 1 2 2 1 3
+    ## [10621] 3 2 2 3 3 2 2 2 2 2 1 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 3 2
+    ## [10657] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 3 2 1 1 2 2 3 2 2 1
+    ## [10693] 2 2 2 2 2 2 3 2 3 2 2 2 2 1 3 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ## [10729] 2 2 3 2 1 2 2 2 1 2 3 2 2 2 2 2 2 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2
+    ## [10765] 2 2 2 2 2 2 2 2 2 2 2 1 2 3 3 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 1 2 2 1 2
+    ## [10801] 2 2 2 2 2 1 2 2 2 2 1 3 3 2 3 2 3 3 1 2 2 2 2 2 1 2 2 2 2 2 2 2 3 2 3 1
+    ## [10837] 2 2 2 2 2 3 2 2 3 3 3 2 1 2 2 3 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 3 3 2
+    ## [10873] 2 2 1 2 2 2 1 2 3 2 2 2 2 3 2 2 2 2 3 1 1 2 2 3 2 3 2 2 2 2 1 2 2 2 2 2
+    ## [10909] 2 2 2 2 2 2 2 2 2 1 2 2 1 2 1 2 2 2 1 2 2 2 3 2 2 3 2 2 2 2 2 2 2 2 2 2
+    ## [10945] 1 2 2 2 2 2 2 2 2 2 3 2 2 2 2 3 1 2 2 2 2 2 2 2 1 2 1 2 2 2 2 2 2 2 2 2
+    ## [10981] 2 3 2 3 2 2 2 3 2 2 2 2 2 1 2 2 2 2 3 2 2 2 2 2 2 2 2 3 2 1 2 2 2 2 2 2
+    ## [11017] 2 2 2 3 3 3 3 2 1 1 2 3 2 2 2 2 3 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 1 2
+    ## [11053] 2 3 2 2 3 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 3 2 2 2 2 1
+    ## [11089] 2 2 2 2 2 1 2 2 2 2 3 2 2 2 3 3 3 2 2 3 3 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2
+    ## [11125] 3 3 3 3 3 3 2 2 1 2 2 2 2 3 2 3 2 2 2 1 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1
+    ## [11161] 2 3 2 2 2 2 2 2 3 2 2 2 2 2 3 2 2 3 3 2 3 2 2 2 2 3 2 2 2 3 3 2 2 2 3 2
+    ## [11197] 2 2 2 2 2 2 2 3 2 2 2 3 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 1 2 2 2 2 2 3 2 2
+    ## [11233] 3 2 2 2 2 2 2 2 2 2 2 3 2 1 2 2 2 2 2 2 3 2 3 2 3 2 3 2 2 2 2 2 2 2 2 2
+    ## [11269] 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ## [11305] 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2
+    ## [11341] 2 2 2 2 2 2 1 3 2 2 2 2 2 3 1 2 2 2 2 2 3 2 1 2 3 2 1 2 2 2 2 1 1 1 1 2
+    ## [11377] 2 3 2 3 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 3 2 3 2 3 2 2 2 1 3 2 2 2 3 2 2
+    ## [11413] 2 2 2 2 3 2 2 2 2 2 2 2 2 2 3 2 2 2 2 3 3 2 1 2 2 2 1 3 2 3 3 2 2 2 2 2
+    ## [11449] 2 2 2 2 2 2 2 2 3 2 2 1 2 2 2 2 2 3 2 2 2 2 2 1 2 2 2 2 2 3 2 2 2 2 1 2
+    ## [11485] 3 3 2 2 2 2 2 2 3 2 2 1 2 2 3 2 2 2 2 3 2 2 2 2 3 2 2 2 2 3 2 1 2 2 3 2
+    ## [11521] 1 2 2 2 1 2 3 2 2 2 3 2 2 3 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2
+    ## [11557] 2 2 3 3 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+
+``` r
+# Visualizing the  clustering results
+# ---
+# 
+par(mfrow = c(1,2), mar = c(5,4,2,2))
+
+# Plotting to see how Ozone and Solar.R data points have been distributed in clusters
+# ---
+#
+plot(df6[,1:2], col = result$cluster) 
+```
+
+![](IPWK13_CORE_UNSUPERVISED_LEARNING_ELIZABETH_JOSEPHINE_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
+
+``` r
+# Verifying the results of clustering
+# ---
+# 
+par(mfrow = c(2,2), mar = c(5,4,2,2))
+
+# Plotting to see how Sepal.Length and Sepal.Width data points have been distributed in clusters
+plot(df6[c(1,2)], col = result$cluster)
+```
+
+![](IPWK13_CORE_UNSUPERVISED_LEARNING_ELIZABETH_JOSEPHINE_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
+
+``` r
+# Plotting to see how the data points have been distributed 
+# originally as per "class" attribute in dataset
+df6.class<- df6[, "PageValues"]
+plot(df6[c(1,2)], col = df6.class)
+```
+
+    ## Warning in plot.xy(xy, type, ...): supplied color is neither numeric nor
+    ## character
+    
+    ## Warning in plot.xy(xy, type, ...): supplied color is neither numeric nor
+    ## character
+
+    ## Warning in plot.xy(xy.coords(x, y), type = type, ...): supplied color is neither
+    ## numeric nor character
+
+    ## Warning in plot.xy(xy, type, ...): supplied color is neither numeric nor
+    ## character
+
+    ## Warning in plot.xy(xy.coords(x, y), type = type, ...): supplied color is neither
+    ## numeric nor character
+
+    ## Warning in plot.xy(xy, type, ...): supplied color is neither numeric nor
+    ## character
+
+    ## Warning in plot.xy(xy.coords(x, y), type = type, ...): supplied color is neither
+    ## numeric nor character
+
+    ## Warning in plot.xy(xy, type, ...): supplied color is neither numeric nor
+    ## character
+    
+    ## Warning in plot.xy(xy, type, ...): supplied color is neither numeric nor
+    ## character
+
+    ## Warning in plot.xy(xy.coords(x, y), type = type, ...): supplied color is neither
+    ## numeric nor character
+
+    ## Warning in plot.xy(xy, type, ...): supplied color is neither numeric nor
+    ## character
+
+    ## Warning in plot.xy(xy.coords(x, y), type = type, ...): supplied color is neither
+    ## numeric nor character
+
+    ## Warning in plot.xy(xy, type, ...): supplied color is neither numeric nor
+    ## character
+
+    ## Warning in plot.xy(xy.coords(x, y), type = type, ...): supplied color is neither
+    ## numeric nor character
+
+    ## Warning in plot.xy(xy, type, ...): supplied color is neither numeric nor
+    ## character
+
+![](IPWK13_CORE_UNSUPERVISED_LEARNING_ELIZABETH_JOSEPHINE_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
+
+``` r
+plot(df6[c(2,3)], col = result$cluster)
+```
+
+![](IPWK13_CORE_UNSUPERVISED_LEARNING_ELIZABETH_JOSEPHINE_files/figure-gfm/unnamed-chunk-37-2.png)<!-- -->
+
+``` r
+plot(df6[c(2,3)], col = df6.class)
+```
+
+    ## Warning in plot.xy(xy, type, ...): supplied color is neither numeric nor
+    ## character
+    
+    ## Warning in plot.xy(xy, type, ...): supplied color is neither numeric nor
+    ## character
+
+    ## Warning in plot.xy(xy.coords(x, y), type = type, ...): supplied color is neither
+    ## numeric nor character
+
+    ## Warning in plot.xy(xy, type, ...): supplied color is neither numeric nor
+    ## character
+
+    ## Warning in plot.xy(xy.coords(x, y), type = type, ...): supplied color is neither
+    ## numeric nor character
+
+    ## Warning in plot.xy(xy, type, ...): supplied color is neither numeric nor
+    ## character
+
+    ## Warning in plot.xy(xy.coords(x, y), type = type, ...): supplied color is neither
+    ## numeric nor character
+
+    ## Warning in plot.xy(xy, type, ...): supplied color is neither numeric nor
+    ## character
+    
+    ## Warning in plot.xy(xy, type, ...): supplied color is neither numeric nor
+    ## character
+
+    ## Warning in plot.xy(xy.coords(x, y), type = type, ...): supplied color is neither
+    ## numeric nor character
+
+    ## Warning in plot.xy(xy, type, ...): supplied color is neither numeric nor
+    ## character
+
+    ## Warning in plot.xy(xy.coords(x, y), type = type, ...): supplied color is neither
+    ## numeric nor character
+
+    ## Warning in plot.xy(xy, type, ...): supplied color is neither numeric nor
+    ## character
+
+    ## Warning in plot.xy(xy.coords(x, y), type = type, ...): supplied color is neither
+    ## numeric nor character
+
+    ## Warning in plot.xy(xy, type, ...): supplied color is neither numeric nor
+    ## character
+
+![](IPWK13_CORE_UNSUPERVISED_LEARNING_ELIZABETH_JOSEPHINE_files/figure-gfm/unnamed-chunk-37-3.png)<!-- -->
+
 ### HIERACHIAL CLUSTERING
 
-### DBSCAN CLUSTERING
+``` r
+# As we donât want the hierarchical clustering result to depend to an arbitrary variable unit, 
+# we start by scaling the data using the R function scale() as follows
+# ---
+# 
+df6 <- scale(df6)
+head(df6)
+```
 
-# CHALLENGING THE SOLUTION
+    ##      ProductRelated ProductRelated_Duration PageValues
+    ## [1,]     -0.7232527              -0.6522699 -0.3284082
+    ## [2,]     -0.7011322              -0.6194514 -0.3284082
+    ## [3,]     -0.7232527              -0.6527827 -0.3284082
+    ## [4,]     -0.7011322              -0.6509024 -0.3284082
+    ## [5,]     -0.5241685              -0.3304950 -0.3284082
+    ## [6,]     -0.3250844              -0.5731893 -0.3284082
 
-# FOLLOW-UP QUESTIONS
+``` r
+# First we use the dist() function to compute the Euclidean distance between observations, 
+d <- dist(df6, method = "euclidean")
+
+# We then hierarchical clustering using the Ward's method
+res.hc <- hclust(d, method = "ward.D2" )
+```
+
+``` r
+# Lastly, we plot the obtained dendrogram
+
+plot(res.hc, cex = 0.6, hang = -1)
+```
+
+![](IPWK13_CORE_UNSUPERVISED_LEARNING_ELIZABETH_JOSEPHINE_files/figure-gfm/unnamed-chunk-40-1.png)<!-- -->
