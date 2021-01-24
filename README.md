@@ -19,15 +19,15 @@ Your findings should help inform the team in formulating the marketing and sales
 
 ## You will create a Markdown which will comprise the following sections. 
 
-Problem Definition
+- Problem Definition
 
-Data Sourcing
+- Data Sourcing
 
-Check the Data
+- Check the Data
 
-Perform Data Cleaning
+- Perform Data Cleaning
 
-Perform Exploratory Data Analysis  (Univariate, Bivariate & Multivariate)
+- Perform Exploratory Data Analysis  (Univariate, Bivariate & Multivariate)
 
 Implement the Solution
 
