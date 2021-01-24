@@ -1,6 +1,4 @@
 # IPWK13-CORE
-Understand and apply unsupervised learning algorithms to solving business problems.
-Assessment
 # Part 1: Research Question
 
 This section of the assessment covers unsupervised learning with R. 
